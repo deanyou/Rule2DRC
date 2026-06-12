@@ -24,6 +24,28 @@ Manufacturable chips should satisfy thousands of geometry-based design rules. **
 
 **Rule2DRC** evaluates whether an LLM agent can synthesize runnable KLayout DRC Ruby scripts from these specifications. Each problem contains a natural-language rule, layer definitions, the gold DRC script, and labeled GDS testcases. A generation is evaluated as successful only if the generated script compiles and matches all testcase labels for the problem. The benchmark contains **1,000 problems** and **13,921 labeled GDS testcases**.
 
+## 项目意义
+
+芯片制造前必须通过数千条几何设计规则。**DRC (Design Rule Check)** 通过在版图上运行领域特定语言（如 KLayout Ruby）编写的脚本来执行这些规则检查。从自然语言规范编写 DRC 脚本耗时且需要深厚的 EDA 专业知识。
+
+Rule2DRC 填补了三个空白：
+
+1. **标准化评估** — 此前 LLM-for-EDA 缺乏客观的、基于执行的基准测试。Rule2DRC 提供 1000 个问题，每个包含标准答案脚本和标注好的 GDS 测试用例，使 DRC 生成能力可量化。
+
+2. **执行验证** — 生成的脚本必须在 KLayout 中编译通过且对所有测试用例分类正确（每个 category F1=1.0）才算成功，超越语法检查，验证语义正确性。
+
+3. **测试生成驱动的候选选择** — SplitTester 方法利用 LLM 生成的 GDS 测试用例区分候选脚本，在没有标准测试用例的情况下实现 Best-of-N 选择。
+
+**对 EDA 工作流的影响：**
+
+| 方面 | Rule2DRC 之前 | 使用 Rule2DRC 之后 |
+|------|-------------|-------------------|
+| 脚本编写 | 专家手工编写，耗时数小时 | LLM 生成，分钟级完成 |
+| 评估方式 | 人工审查 | 自动化 F1 评分 |
+| 基准测试 | 非标准化、不可复现 | 标准化 1000 问题套件 |
+
+**局限性：** 本 benchmark 仅覆盖 SKY130 的单规则问题；真实 PDK 有多规则、层次化约束。这是迈向完整 DRC 自动化的第一步。
+
 ## News
 
 - **Aug 2026**: We will present Rule2DRC at [Agentic AI Summit 2026 @ UC Berkeley](https://rdi.berkeley.edu/events/agentic-ai-summit-2026).

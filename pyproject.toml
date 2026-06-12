@@ -11,14 +11,20 @@ dependencies = [
     "pyyaml>=6.0.3",
     "tqdm>=4.67.1",
     "questionary>=2.0.1",
-    "torch==2.9.0",
-    "transformers==4.56.1",
-    "vllm==0.13.0; sys_platform == 'linux'",
     "datasets>=4.4.2",
     "fastapi>=0.125.0",
     "uvicorn>=0.38.0",
-    "faiss-cpu>=1.13.2",
-    "klayout==0.30.5",
     "matplotlib>=3.10.8",
     "beautifulsoup4>=4.14.3",
+]
+
+[project.optional-dependencies]
+ml = [
+    "torch==2.9.0",
+    "transformers==4.56.1",
+    "vllm==0.13.0; sys_platform == 'linux'",
+    "faiss-cpu>=1.13.2; sys_platform != 'darwin' or platform_machine != 'x86_64'",
+]
+klayout-pya = [
+    "klayout==0.30.5",
 ]
