@@ -46,6 +46,58 @@ Rule2DRC 填补了三个空白：
 
 **局限性：** 本 benchmark 仅覆盖 SKY130 的单规则问题；真实 PDK 有多规则、层次化约束。这是迈向完整 DRC 自动化的第一步。
 
+## 模拟版图 Matching/Symmetry 扩展
+
+在原始 Rule2DRC 基础上，新增 **5 个模拟版图规则**问题，覆盖 matching 和 symmetry 检查：
+
+| 问题 ID | 规则类型 | 检查内容 | Category |
+|---------|---------|---------|----------|
+| 1001_diff_pair_sym | 差分对对称性 | 左右器件尺寸一致、关于 Y 轴镜像对称 | DIFF_PAIR_ASYMMETRIC |
+| 1002_curr_mirror | 电流镜匹配 | 镜像管 active area (W×L) 相等 | CURR_MIRROR_MISMATCH |
+| 1003_ccentroid_res | 共质心电阻阵列 | A-B-B-A 交叉排列，偶数个元素 | CCENTROID_VIOLATION |
+| 1004_axis_sym | 轴对称性 | 所有结构关于 Y 轴镜像对称 | AXIS_ASYMMETRIC |
+| 1005_orient_match | 电阻方向匹配 | 匹配电阻方向一致（全水平或全垂直） | ORIENT_MISMATCH |
+
+### 检查方法
+
+由于 KLayout DRC DSL 不支持直接的对称/matching 检查，采用 **Ruby 脚本 + RDB 输出** 方案：
+
+```bash
+# 运行模拟版图检查
+klayout -b -r problems/1001_diff_pair_sym/gold/1001_diff_pair_sym.drc \
+  -rd input=<test.gds> -rd output=<result.rdb>
+```
+
+检查逻辑：
+- **对称性**: 比较 Y 轴左右两侧的多边形数量、面积、尺寸
+- **匹配**: 比较配对器件的面积和尺寸
+- **共质心**: 检查元素数量（偶数）、首尾对称性、A-A-B-B 分组检测
+- **方向**: 比较多边形宽高比判断水平/垂直方向
+
+### 评估结果
+
+```
+1001_diff_pair_sym: pass=OK fail=OK  F1=1.0
+1002_curr_mirror:   pass=OK fail=OK  F1=1.0
+1003_ccentroid_res: pass=OK fail=OK  F1=1.0
+1004_axis_sym:      pass=OK fail=OK  F1=1.0
+1005_orient_match:  pass=OK fail=OK  F1=1.0
+```
+
+### 文件结构
+
+```
+problems/1001_diff_pair_sym/
+├── spec.yaml                      # 问题定义（NL 规则 + 层定义）
+├── gold/
+│   ├── 1001_diff_pair_sym.drc     # Gold DRC（Ruby 脚本）
+│   └── check_sym.rb               # 对称检查核心逻辑
+└── data/gds/
+    ├── labels.csv                 # 标注
+    ├── pass/*.gds                 # 应通过的版图
+    └── fail/*.gds                 # 应失败的版图
+```
+
 ## News
 
 - **Aug 2026**: We will present Rule2DRC at [Agentic AI Summit 2026 @ UC Berkeley](https://rdi.berkeley.edu/events/agentic-ai-summit-2026).
