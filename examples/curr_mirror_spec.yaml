@@ -1,0 +1,17 @@
+# Current Mirror Matching Rules
+id: curr_mirror
+title: "Analog: Current Mirror Matching"
+
+layers:
+  ndiff: [65, 0]
+  poly: [66, 0]
+
+categories:
+  - CURR_MIRROR_MISMATCH
+
+rules:
+  # Current mirror devices must have equal active area
+  - type: expression
+    expression: "($ndiff.area_sum != 0)"  # placeholder - real check needs area comparison
+    category: CURR_MIRROR_MISMATCH
+    text: "Current mirror transistors must have equal NDIFF area"

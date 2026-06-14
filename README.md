@@ -98,6 +98,85 @@ problems/1001_diff_pair_sym/
     └── fail/*.gds                 # 应失败的版图
 ```
 
+## spec2drc: Foundry 规范 → DRC 脚本生成器
+
+将结构化 DRC 规范（YAML）自动转换为可执行的 KLayout DRC Ruby 脚本。
+
+### 使用方法
+
+```bash
+# 从 YAML spec 生成 DRC 脚本
+python scripts/spec2drc.py examples/sky130_m1_rules.yaml -o output.drc
+
+# 查看支持的规则类型
+python scripts/spec2drc.py --list-rules
+
+# 直接输出到终端
+python scripts/spec2drc.py examples/nsm_keepout_spec.yaml
+```
+
+### Spec 格式
+
+```yaml
+id: my_drc_rules
+title: "My DRC Rules"
+
+layers:
+  met1: [68, 20]      # layer号, datatype
+  via: [68, 44]
+
+categories:
+  - M1_MIN_WIDTH
+  - M1_MIN_SPACE
+
+rules:
+  - type: width_min        # 规则类型
+    layer: met1            # 应用层
+    threshold: 0.14        # 阈值 (um)
+    category: M1_MIN_WIDTH # 输出类别
+    text: "Metal1 minimum width is 0.14 um"
+```
+
+### 支持的规则类型
+
+| 类型 | 说明 | 示例 |
+|------|------|------|
+| `width_min` | 最小宽度 | `layer.width(0.14.um)` |
+| `width_max` | 最大宽度 (sized) | `layer.sized(-d/2).sized(d/2)` |
+| `spacing` | 层间间距 | `layer1.separation(layer2, X.um)` |
+| `spacing_self` | 同层自间距 | `layer.space(X.um)` |
+| `enclosed` | 包围检查 | `inner.enclosed(outer, X.um)` |
+| `inside` | 必须在内部 | `layer - outer` |
+| `overlap` | 重叠检查 | `layer1 & layer2` |
+| `no_overlap` | 不应重叠 | `layer1 & layer2` |
+| `separation` | 分离间距 | `layer1.separation(layer2, X.um)` |
+| `extension` | 扩展检查 | `layer - other.sized(X.um)` |
+| `expression` | 自定义表达式 | 任意 DRC 表达式 |
+
+### 示例
+
+```bash
+# 生成综合模拟版图 DRC 脚本
+python scripts/spec2drc.py examples/analog_comprehensive_spec.yaml -o analog.drc
+
+# 验证生成的脚本
+klayout -b -r analog.drc -rd input=test.gds -rd output=result.rdb
+```
+
+### 工作流
+
+```
+Foundry PDF/文档
+    ↓ (人工/LLM 提取)
+YAML Spec 文件
+    ↓ (spec2drc.py)
+KLayout DRC 脚本
+    ↓ (klayout -b -r)
+RDB 违规报告
+    ↓ (eval.py)
+评估结果 (F1 Score)
+```
+
 ## News
 
 - **Aug 2026**: We will present Rule2DRC at [Agentic AI Summit 2026 @ UC Berkeley](https://rdi.berkeley.edu/events/agentic-ai-summit-2026).

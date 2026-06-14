@@ -1,0 +1,35 @@
+# SKY130 Metal1 DRC Rules
+id: sky130_m1_rules
+title: "SKY130 Metal1 Design Rules"
+
+layers:
+  met1: [68, 20]      # Metal1 drawing
+  via1: [68, 44]      # Via1
+
+categories:
+  - M1_MIN_WIDTH
+  - M1_MIN_SPACE
+  - M1_ENCLOSURE
+
+rules:
+  # Rule 1: Minimum metal width
+  - type: width_min
+    layer: met1
+    threshold: 0.14
+    category: M1_MIN_WIDTH
+    text: "Metal1 minimum width is 0.14 um"
+
+  # Rule 2: Minimum metal spacing
+  - type: spacing_self
+    layer: met1
+    threshold: 0.14
+    category: M1_MIN_SPACE
+    text: "Metal1 minimum spacing is 0.14 um"
+
+  # Rule 3: Via1 must be enclosed by Metal1 by 0.055 um
+  - type: enclosed
+    layer: via1
+    other_layer: met1
+    threshold: 0.055
+    category: M1_ENCLOSURE
+    text: "Via1 must be enclosed by Metal1 by 0.055 um"

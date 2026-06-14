@@ -1,0 +1,23 @@
+# Differential Pair Symmetry Check
+id: diff_pair_sym
+title: "Analog: Differential Pair Symmetry"
+
+layers:
+  ndiff: [65, 0]
+  poly: [66, 0]
+
+categories:
+  - DIFF_PAIR_ASYMMETRIC
+
+rules:
+  # Left/right NDIFF must have same width
+  - type: expression
+    expression: "($ndiff.bbox_width.left != $ndiff.bbox_width.right)"
+    category: DIFF_PAIR_ASYMMETRIC
+    text: "NDIFF left/right width mismatch"
+
+  # Left/right POLY must have same width
+  - type: expression
+    expression: "($poly.bbox_width.left != $poly.bbox_width.right)"
+    category: DIFF_PAIR_ASYMMETRIC
+    text: "POLY left/right width mismatch"

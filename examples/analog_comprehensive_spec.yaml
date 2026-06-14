@@ -1,0 +1,81 @@
+# Comprehensive Analog Layout DRC Rules
+id: analog_comprehensive
+title: "Analog Layout Comprehensive DRC Check"
+
+layers:
+  ndiff: [65, 0]       # N-diffusion
+  pdiff: [64, 0]       # P-diffusion
+  poly: [66, 0]        # Polysilicon
+  li1: [67, 0]         # Local interconnect
+  met1: [68, 20]       # Metal1
+  met2: [69, 20]       # Metal2
+  via: [68, 44]        # Via1
+  nwell: [64, 20]      # N-well
+  nsm: [200, 0]        # NSM marker
+
+categories:
+  - M1_MIN_WIDTH
+  - M1_MIN_SPACE
+  - M2_MIN_WIDTH
+  - POLY_MIN_WIDTH
+  - NWELL_ENCLOSURE
+  - VIA_ENCLOSURE
+  - NSM_KEEPOUT
+
+rules:
+  # === Metal1 Rules ===
+  - type: width_min
+    layer: met1
+    threshold: 0.14
+    category: M1_MIN_WIDTH
+    text: "Metal1 minimum width is 0.14 um"
+
+  - type: spacing_self
+    layer: met1
+    threshold: 0.14
+    category: M1_MIN_SPACE
+    text: "Metal1 minimum spacing is 0.14 um"
+
+  # === Metal2 Rules ===
+  - type: width_min
+    layer: met2
+    threshold: 0.14
+    category: M2_MIN_WIDTH
+    text: "Metal2 minimum width is 0.14 um"
+
+  # === Poly Rules ===
+  - type: width_min
+    layer: poly
+    threshold: 0.15
+    category: POLY_MIN_WIDTH
+    text: "Poly minimum width is 0.15 um"
+
+  # === N-well Rules ===
+  - type: enclosed
+    layer: pdiff
+    other_layer: nwell
+    threshold: 0.22
+    category: NWELL_ENCLOSURE
+    text: "P-diff must be enclosed by N-well by 0.22 um"
+
+  # === Via Rules ===
+  - type: enclosed
+    layer: via
+    other_layer: met1
+    threshold: 0.055
+    category: VIA_ENCLOSURE
+    text: "Via must be enclosed by Metal1 by 0.055 um"
+
+  # === NSM Keepout Rules ===
+  - type: no_overlap
+    layer: met1
+    other_layer: nsm
+    category: NSM_KEEPOUT
+    text: "Metal1 must not overlap NSM"
+
+  - type: separation
+    layer: met1
+    other_layer: nsm
+    threshold: 1.0
+    category: NSM_KEEPOUT
+    text: "Metal1 to NSM spacing < 1.0 um"

@@ -1,0 +1,68 @@
+# NSM Keepout Rules
+id: nsm_keepout
+title: "SKY130 NSM Keepout Check"
+
+layers:
+  diff: [65, 20]
+  poly: [66, 20]
+  li1: [67, 20]
+  met1: [68, 20]
+  nsm: [200, 0]
+
+categories:
+  - NSM_KEEPOUT_LT_1um
+
+rules:
+  # All signal layers must not overlap NSM
+  - type: no_overlap
+    layer: diff
+    other_layer: nsm
+    category: NSM_KEEPOUT_LT_1um
+    text: "DIFF must not overlap NSM"
+
+  - type: no_overlap
+    layer: poly
+    other_layer: nsm
+    category: NSM_KEEPOUT_LT_1um
+    text: "POLY must not overlap NSM"
+
+  - type: no_overlap
+    layer: li1
+    other_layer: nsm
+    category: NSM_KEEPOUT_LT_1um
+    text: "LI1 must not overlap NSM"
+
+  - type: no_overlap
+    layer: met1
+    other_layer: nsm
+    category: NSM_KEEPOUT_LT_1um
+    text: "MET1 must not overlap NSM"
+
+  # Signal layers must be >= 1.0 um from NSM
+  - type: separation
+    layer: diff
+    other_layer: nsm
+    threshold: 1.0
+    category: NSM_KEEPOUT_LT_1um
+    text: "DIFF to NSM spacing < 1.0 um"
+
+  - type: separation
+    layer: poly
+    other_layer: nsm
+    threshold: 1.0
+    category: NSM_KEEPOUT_LT_1um
+    text: "POLY to NSM spacing < 1.0 um"
+
+  - type: separation
+    layer: li1
+    other_layer: nsm
+    threshold: 1.0
+    category: NSM_KEEPOUT_LT_1um
+    text: "LI1 to NSM spacing < 1.0 um"
+
+  - type: separation
+    layer: met1
+    other_layer: nsm
+    threshold: 1.0
+    category: NSM_KEEPOUT_LT_1um
+    text: "MET1 to NSM spacing < 1.0 um"
