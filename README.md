@@ -13,6 +13,7 @@
 <p align="center">
   <a href="https://arxiv.org/abs/2605.15669"><img src="https://img.shields.io/badge/arXiv-2605.15669-b31b1b.svg"></a>
   <a href="https://jinukkim.me/blog/rule2drc/"><img src="https://img.shields.io/badge/Project-Rule2DRC-blue"></a>
+  <a href="https://jinukkim.me/blog/rule2drc/leaderboard/"><img src="https://img.shields.io/badge/Leaderboard-Rule2DRC-8A2BE2"></a>
   <a href="https://huggingface.co/papers/2605.15669"><img src="https://img.shields.io/badge/HF%20Papers-2605.15669-yellow"></a>
   <a href="https://huggingface.co/datasets/jusjinuk/Rule2DRC"><img src="https://img.shields.io/badge/Dataset-Hugging%20Face-green"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-orange"></a>
@@ -333,11 +334,18 @@ Method keys:
 
 Aggregated JSON files are saved under the BoN run directory as `bon_pool<pool_size>__<method_key>.json`, for example `out_drc/problems/{bon60_run}/bon_pool10__generated_tests_ours.json`.
 
-## TODO
+## Leaderboard
 
-- [ ] Build a public leaderboard website.
-- [ ] Add private held-out tasks.
-- [ ] Evaluate additional models and upload their results.
+The public leaderboard lives at [jinukkim.me/blog/rule2drc/leaderboard](https://jinukkim.me/blog/rule2drc/leaderboard/). It reports single-sample (Sample-1) success and error rates on the public set, with and without the KLayout API documentation in context.
+
+To evaluate a model through any OpenAI-compatible API (e.g., [OpenRouter](https://openrouter.ai)):
+
+```bash
+export OPENROUTER_API_KEY=sk-or-...
+bash scripts/leaderboard/run_eval.sh openai/gpt-oss-120b medium
+```
+
+This generates one DRC script per problem in both context settings, evaluates them with KLayout, and prints the success/error rates along with a ready-to-paste leaderboard row. To submit a result, open an issue or pull request with the printed row.
 
 ## Citation
 
